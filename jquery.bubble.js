@@ -16,13 +16,7 @@
 			'#0F0' 
 		], 
 		shadowBlur:1, 
-		background:{
-			0:'#FFF', 
-			1:'#FFF' 
-		}, 
 		granularity:0.01, 
-		globalCompositeOperationBackground:'source-over', 
-		globalCompositeOperationObject:'source-over', 
 		bubbleFunc:false, 
 		radiusFunc:false, 
 		angleFunc:false, 
@@ -48,7 +42,6 @@
 		}
 		let 
 		canvas, 
-		linearGradient, 
 		canvasWidth, 
 		canvasHeight, 
 		bubblesConfigs = [], 
@@ -62,7 +55,6 @@
 			funcPutCanvas = 
 			funcEditConfigs = 
 			funcPutCanvasAttribute = 
-			funcPutCanvasBackground = 
 			funcPutBubblesConfigs = 
 			funcGetRandomNumber = 
 			funcDestructor = void 0;
@@ -77,7 +69,6 @@
 				funcPutCanvas();
 				funcEditConfigs();
 				funcPutCanvasAttribute();
-				funcPutCanvasBackground();
 				funcPutBubblesConfigs(eleImg);
 				funcShowBubbles();
 				funcDestructor();
@@ -178,19 +169,6 @@
 			canvas = eleCanvas.get(0).getContext('2d');
 			canvas.shadowBlur = configs.shadowBlur;
 		}, 
-		funcPutCanvasBackground = () => {
-			linearGradient = canvas.createLinearGradient(
-				0, 
-				0, 
-				canvasWidth, 
-				canvasHeight 
-			);
-			for(var offset in configs.background)
-			linearGradient.addColorStop(
-				offset, 
-				configs.background[offset] 
-			);
-		}, 
 		funcPutBubblesConfigs = (eleImg) => {
 			for(var i = 0, l = configs.bubbles;i < l;++i)
 			bubblesConfigs.push({
@@ -219,17 +197,12 @@
 			}
 		}, 
 		funcShowBubbles = (timestamp) => {
-			if(configs.animate)
-			window.requestAnimationFrame((timestamp) => funcShowBubbles(timestamp));
-			canvas.globalCompositeOperation = configs.globalCompositeOperationBackground, 
-			canvas.fillStyle = linearGradient, 
-			canvas.fillRect(
+			canvas.clearRect(
 				0, 
 				0, 
 				canvasWidth, 
 				canvasHeight 
 			), 
-			canvas.globalCompositeOperation = configs.globalCompositeOperationObject, 
 			bubblesConfigs.forEach((object) => {
 				canvas.beginPath(), 
 				canvas.arc(
@@ -259,6 +232,8 @@
 				object.y - object.radius > canvasHeight && (object.y = -object.radius), 
 				object.y + object.radius < 0 && (object.y = canvasHeight + object.radius);
 			});
+			if(configs.animate)
+			window.requestAnimationFrame((timestamp) => funcShowBubbles(timestamp));
 		};
 		funcInit();
 		return this;
